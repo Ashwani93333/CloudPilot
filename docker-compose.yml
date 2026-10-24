@@ -1,0 +1,65 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: cloudpilot-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-cloudpilot}
+      POSTGRES_USER: ${POSTGRES_USER:-cloudpilot_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cloudpilot_secure_password_dev123!}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cloudpilot_user} -d ${POSTGRES_DB:-cloudpilot}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cloudpilot-net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cloudpilot-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+      SERVER_PORT: 8080
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-cloudpilot}
+      DB_USER: ${POSTGRES_USER:-cloudpilot_user}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-cloudpilot_secure_password_dev123!}
+      JWT_SECRET: ${JWT_SECRET:-404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+      MAX_UPLOAD_MB: ${MAX_UPLOAD_MB:-50}
+      IMPORT_BATCH_SIZE: ${IMPORT_BATCH_SIZE:-2000}
+      AWS_ADAPTER_MODE: ${AWS_ADAPTER_MODE:-mock}
+    ports:
+      - "8080:8080"
+    networks:
+      - cloudpilot-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: cloudpilot-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+    networks:
+      - cloudpilot-net
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  cloudpilot-net:
+    driver: bridge

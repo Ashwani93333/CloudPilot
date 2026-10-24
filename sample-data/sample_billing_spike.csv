@@ -1,0 +1,8 @@
+usage_date,service,region,usage_type,currency,cost_amount,resource_id,account_id
+2026-10-01,AmazonEC2,us-east-1,BoxUsage:t3.medium,USD,14.500000,i-0a1b2c3d4e5f0001,111122223333
+2026-10-02,AmazonEC2,us-east-1,BoxUsage:t3.medium,USD,14.500000,i-0a1b2c3d4e5f0001,111122223333
+2026-10-03,AmazonEC2,us-east-1,BoxUsage:t3.medium,USD,14.500000,i-0a1b2c3d4e5f0001,111122223333
+2026-10-04,AmazonEC2,us-east-1,BoxUsage:t3.medium,USD,14.500000,i-0a1b2c3d4e5f0001,111122223333
+2026-10-05,AmazonEC2,us-east-1,BoxUsage:t3.medium,USD,14.500000,i-0a1b2c3d4e5f0001,111122223333
+2026-10-06,AmazonEC2,us-east-1,BoxUsage:t3.medium,USD,185.000000,i-0a1b2c3d4e5f0001,111122223333
+2026-10-07,AmazonEC2,us-east-1,BoxUsage:t3.medium,USD,14.500000,i-0a1b2c3d4e5f0001,111122223333
